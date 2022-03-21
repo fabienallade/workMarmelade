@@ -20,16 +20,21 @@ import androidx.compose.ui.text.ParagraphStyle
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import appolloClient
 import com.apollographql.apollo3.exception.ApolloException
 import com.fabien.workmarmelade.model.RandomQuote
 import com.fabien.workmarmelade.ui.theme.*
 import com.fabien.workmarmelade.ui.theme.WorkMarmeladeTheme
+import com.fabien.workmarmelade.ui.theme.util.CustomModal
 import com.fabien.workmarmelade.ui.theme.util.CustomProgressBar
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,6 +63,8 @@ fun Greeting(name: String) {
     val imagePhase = listOf<Int>(R.drawable.smiley_sick,R.drawable.smiley_meh,R.drawable.smiley_awe)
     var imageChange : MutableState<Int> =remember{mutableStateOf<Int>(0)}
     var buttonChange : MutableState<Int> =remember{mutableStateOf<Int>(0)}
+    var dialogOpen: MutableState<Boolean> = remember{mutableStateOf<Boolean>(true)}
+    val coroutineScope = rememberCoroutineScope()
     var data  = remember{
         mutableStateOf<RandomQuoteQuery.RandomQuote>(RandomQuoteQuery.RandomQuote("1","fabien","fabien"))
     }
@@ -85,6 +92,7 @@ fun Greeting(name: String) {
                         fontFamily = fontSansFamily,
                         fontWeight = FontWeight.Bold, color = Color.White)
                     Text(text = "${data.value?.quote}",
+                        textAlign=TextAlign.Center,
                         fontFamily = fontSansFamily,fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.White)
                 }
             }
@@ -140,32 +148,46 @@ fun Greeting(name: String) {
                     .padding(horizontal = 13.dp)) {
                     Text(text = "Votre progression",fontFamily = fontSansFamily,color= TextColor, fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(25.dp))
-                    Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth(),
+                    Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically) {
-                        Column(modifier = Modifier.fillMaxWidth(0.9f)) {
+                        Column(modifier = Modifier.fillMaxWidth(0.94f)) {
                             CustomProgressBar(
                                 Modifier
                                     .clip(shape = RoundedCornerShape(10.dp))
                                     .height(14.dp),
-                                400.dp,
+                                350.dp,
                                 ProgressBackground,
                                 BackgroundNew1,
                                 percentage.value,)
                         }
-                        Column(modifier = Modifier.fillMaxWidth(0.1f)) {
+                        Column(modifier = Modifier.fillMaxWidth()) {
                             Image(painterResource(id = R.drawable.picto_etoile),
                                 contentDescription = null,
                                 modifier = Modifier
-                                    .width(18.dp)
+                                    .fillMaxWidth()
                                     .height(17.dp))
                         }
                     }
+                    Spacer(modifier = Modifier.height(5.dp))
                     Column(horizontalAlignment = Alignment.End, modifier = Modifier.fillMaxWidth()) {
                         Text(text = "10 Citations", fontSize = 13.sp,fontFamily = fontSansFamily,)
                     }
                     Spacer(modifier = Modifier.height(20.dp))
                     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
                         Button(onClick = {
+                            var percent = percentage.value+percentagePerEvolve
+                             coroutineScope.launch {
+                                 data.value = quoteWork()
+//                                 dialogOpen.value = true
+                                 percentage.value =percent
+                                 if(percent <= 39 && percent >= 0){
+                                     imageChange.value = 0
+                                 }else if(percent <= 79 && percent >= 40){
+                                     imageChange.value = 1
+                                 }else if(percent <= 100 && percent >= 80){
+                                     imageChange.value =2
+                                 }
+                             }
 
                         },
                             colors = ButtonDefaults.buttonColors(backgroundColor = ButtonColor),
@@ -180,8 +202,13 @@ fun Greeting(name: String) {
                         }
                     }
                 }
+
             }
+
         }
+//        Dialog(onDismissRequest = {dialogOpen.value = false}){
+//            CustomModal(modifier = Modifier, openDialogCustom = dialogOpen)
+//        }
     }
 }
 
