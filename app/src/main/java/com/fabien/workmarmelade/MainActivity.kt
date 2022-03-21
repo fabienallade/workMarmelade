@@ -7,10 +7,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.LinearProgressIndicator
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -85,23 +82,44 @@ fun Greeting(name: String) {
             Column(modifier = Modifier) {
                 Spacer(modifier = Modifier.height(70.dp))
                 Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                    Row(modifier = Modifier.fillMaxWidth(),verticalAlignment = Alignment.Bottom) {
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.Bottom) {
                         Text(text = "30%", fontSize = 38.sp,
                         fontWeight = FontWeight.Bold, color = TextColor,
                         )
                         Text(text = " des citations", fontSize = 20.sp, color = TextColor)
                     }
                 }
-                Column(modifier = Modifier.fillMaxWidth()) {
+                Spacer(modifier = Modifier.height(31.dp))
+                Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 13.dp)) {
                     Text(text = "Votre progression")
-                    Row() {
-                        CustomProgressBar(Modifier
-                            .clip(shape = RoundedCornerShape(10.dp))
-                            .height(14.dp),
-                            300.dp,
+                    Spacer(modifier = Modifier.height(30.dp))
+                    Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
+                        CustomProgressBar(
+                            Modifier
+                                .clip(shape = RoundedCornerShape(10.dp))
+                                .height(14.dp),
+                            400.dp,
                             ProgressBackground,
                             BackgroundNew1,
-                            65,)
+                            0,)
+                        Image(painterResource(id = R.drawable.picto_etoile),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .width(18.dp)
+                                .height(17.dp))
+                    }
+                    Column(horizontalAlignment = Alignment.End, modifier = Modifier.fillMaxWidth()) {
+                        Text(text = "10 Citations", fontSize = 13.sp)
+                    }
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                        Button(onClick = { /*TODO*/ },
+                            colors = ButtonDefaults.buttonColors(backgroundColor = ButtonColor),
+                            modifier = Modifier.clip(
+                                RoundedCornerShape(50)).background(color = ButtonColor)) {
+                            Text(text = "Citation Suivante",
+                            fontSize = 12.sp, color = Color.White)
+                        }
                     }
                 }
             }
