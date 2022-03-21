@@ -43,7 +43,11 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun Greeting(name: String) {
-    val response = appolloClient.query(RandomQuoteQuery()).execute()
+//    Configuration des données a afficher par default
+    var percentage = 0
+    val phraseEvolution = listOf<String>("Continuer")
+    val imagePhase = listOf<Int>(R.drawable.picto_etoile)
+//    val response = appolloClient.query(RandomQuoteQuery()).execute().data
     Column(modifier = Modifier
         .fillMaxSize()
         .background(
