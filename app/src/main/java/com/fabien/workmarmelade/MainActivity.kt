@@ -19,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import appolloClient
 import com.fabien.workmarmelade.ui.theme.*
 import com.fabien.workmarmelade.ui.theme.WorkMarmeladeTheme
 import com.fabien.workmarmelade.ui.theme.util.CustomProgressBar
@@ -42,6 +43,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun Greeting(name: String) {
+    val response = appolloClient.query(RandomQuoteQuery()).execute()
     Column(modifier = Modifier
         .fillMaxSize()
         .background(

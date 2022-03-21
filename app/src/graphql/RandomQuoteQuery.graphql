@@ -1,0 +1,7 @@
+query RandomQuoteQuery{
+    randomQuote {
+        id
+        quote
+        author
+    }
+}
