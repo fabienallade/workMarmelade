@@ -9,9 +9,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -51,15 +49,15 @@ fun Greeting(name: String) {
 //    Configuration des données a afficher par default
 
     val percentagePerEvolve = 10
-    var percentage = 0.0
+    var percentage = remember{mutableStateOf<Int>(0)}
     val phraseEvolution = listOf<String>("Citation suivante","finir")
-    val imagePhase = listOf<Int>(R.drawable.smiley_awe,R.drawable.smiley_meh,R.drawable.smiley_sick)
-    var data : RandomQuoteQuery.RandomQuote = RandomQuoteQuery.RandomQuote("","","")
+    val imagePhase = listOf<Int>(R.drawable.smiley_sick,R.drawable.smiley_meh,R.drawable.smiley_awe)
+    var imageChange : MutableState<Int> =remember{mutableStateOf<Int>(0)}
+    var data  = remember{
+        mutableStateOf<RandomQuoteQuery.RandomQuote>(RandomQuoteQuery.RandomQuote("","",""))
+    }
     LaunchedEffect(key1 = data,){
-        data = quoteWork();
-        Log.d("fabien","${data?.id}");
-        Log.d("fabien","${data?.author}");
-        Log.d("fabien","${data?.quote}");
+        data.value = quoteWork()
     }
 
     Column(modifier = Modifier
@@ -78,8 +76,8 @@ fun Greeting(name: String) {
             ){
             Row(modifier = Modifier, verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
                 Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(text = "${data?.author}", fontSize = 38.sp, fontWeight = FontWeight.Bold, color = Color.White)
-                    Text(text = "${data?.quote}", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                    Text(text = "${data.value?.author}", fontSize = 38.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                    Text(text = "${data.value?.quote}", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.White)
                 }
             }
         }
@@ -91,7 +89,7 @@ fun Greeting(name: String) {
                 shape = RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp)
             )){
             Box(modifier = Modifier.fillMaxSize(),) {
-                Image(painterResource(id = R.drawable.smiley_awe),
+                Image(painterResource(id = imagePhase[imageChange.value]),
                     contentDescription = null,
                     modifier = Modifier
                         .align(Alignment.TopCenter)
@@ -103,7 +101,7 @@ fun Greeting(name: String) {
                 Spacer(modifier = Modifier.height(70.dp))
                 Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.Bottom) {
-                        Text(text = "30%", fontSize = 38.sp,
+                        Text(text = "${percentage.value}%", fontSize = 38.sp,
                         fontWeight = FontWeight.Bold, color = TextColor,
                         )
                         Text(text = " des citations", fontSize = 20.sp, color = TextColor)
@@ -123,7 +121,7 @@ fun Greeting(name: String) {
                             400.dp,
                             ProgressBackground,
                             BackgroundNew1,
-                            0,)
+                            percentage.value,)
                         Image(painterResource(id = R.drawable.picto_etoile),
                             contentDescription = null,
                             modifier = Modifier
@@ -135,7 +133,9 @@ fun Greeting(name: String) {
                     }
                     Spacer(modifier = Modifier.height(20.dp))
                     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                        Button(onClick = { /*TODO*/ },
+                        Button(onClick = {
+
+                        },
                             colors = ButtonDefaults.buttonColors(backgroundColor = ButtonColor),
                             modifier = Modifier
                                 .clip(
@@ -168,5 +168,5 @@ fun DefaultPreview() {
         null
     }
     Log.d("fabien","fabien ${response?.data}")
-     return (response?.data?.randomQuote ?: null) as RandomQuoteQuery.RandomQuote
+     return (response?.data?.randomQuote ?: RandomQuoteQuery.RandomQuote("","",""))
 }
