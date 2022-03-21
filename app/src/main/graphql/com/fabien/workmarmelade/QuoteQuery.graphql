@@ -1,7 +1,0 @@
-query QuoteQuery{
-    quotes {
-        id
-        quote
-        author
-    }
-}

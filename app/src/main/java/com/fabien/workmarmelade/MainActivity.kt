@@ -1,6 +1,7 @@
 package com.fabien.workmarmelade
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -9,6 +10,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -20,6 +23,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import appolloClient
+import com.apollographql.apollo3.exception.ApolloException
+import com.fabien.workmarmelade.model.RandomQuote
 import com.fabien.workmarmelade.ui.theme.*
 import com.fabien.workmarmelade.ui.theme.WorkMarmeladeTheme
 import com.fabien.workmarmelade.ui.theme.util.CustomProgressBar
@@ -44,10 +49,19 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Greeting(name: String) {
 //    Configuration des données a afficher par default
-    var percentage = 0
-    val phraseEvolution = listOf<String>("Continuer")
-    val imagePhase = listOf<Int>(R.drawable.picto_etoile)
-//    val response = appolloClient.query(RandomQuoteQuery()).execute().data
+
+    val percentagePerEvolve = 10
+    var percentage = 0.0
+    val phraseEvolution = listOf<String>("Citation suivante","finir")
+    val imagePhase = listOf<Int>(R.drawable.smiley_awe,R.drawable.smiley_meh,R.drawable.smiley_sick)
+    var data : RandomQuoteQuery.RandomQuote = RandomQuoteQuery.RandomQuote("","","")
+    LaunchedEffect(key1 = data,){
+        data = quoteWork();
+        Log.d("fabien","${data?.id}");
+        Log.d("fabien","${data?.author}");
+        Log.d("fabien","${data?.quote}");
+    }
+
     Column(modifier = Modifier
         .fillMaxSize()
         .background(
@@ -64,8 +78,8 @@ fun Greeting(name: String) {
             ){
             Row(modifier = Modifier, verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
                 Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(text = "{Auteur}", fontSize = 38.sp, fontWeight = FontWeight.Bold, color = Color.White)
-                    Text(text = "{Citation}", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                    Text(text = "${data?.author}", fontSize = 38.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                    Text(text = "${data?.quote}", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.White)
                 }
             }
         }
@@ -96,7 +110,9 @@ fun Greeting(name: String) {
                     }
                 }
                 Spacer(modifier = Modifier.height(31.dp))
-                Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 13.dp)) {
+                Column(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 13.dp)) {
                     Text(text = "Votre progression")
                     Spacer(modifier = Modifier.height(30.dp))
                     Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
@@ -121,8 +137,11 @@ fun Greeting(name: String) {
                     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
                         Button(onClick = { /*TODO*/ },
                             colors = ButtonDefaults.buttonColors(backgroundColor = ButtonColor),
-                            modifier = Modifier.clip(
-                                RoundedCornerShape(50)).background(color = ButtonColor)) {
+                            modifier = Modifier
+                                .clip(
+                                    RoundedCornerShape(50)
+                                )
+                                .background(color = ButtonColor)) {
                             Text(text = "Citation Suivante",
                             fontSize = 12.sp, color = Color.White)
                         }
@@ -139,4 +158,15 @@ fun DefaultPreview() {
     WorkMarmeladeTheme {
         Greeting("Android")
     }
+}
+
+ suspend fun quoteWork(): RandomQuoteQuery.RandomQuote {
+    val response =  try {
+       appolloClient.query(RandomQuoteQuery()).execute()
+    }catch (e:ApolloException){
+        Log.d("LaunchList", "Error ${e}")
+        null
+    }
+    Log.d("fabien","fabien ${response?.data}")
+     return (response?.data?.randomQuote ?: null) as RandomQuoteQuery.RandomQuote
 }
