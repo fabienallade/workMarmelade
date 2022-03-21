@@ -22,7 +22,7 @@ fun CustomProgressBar(modifier: Modifier, width: Dp, backgroundColor: Color, for
     Box(
         modifier = modifier
             .background(backgroundColor)
-            .fillMaxWidth(0.9f)
+            .fillMaxWidth()
     ) {
         Box(
             modifier = modifier
