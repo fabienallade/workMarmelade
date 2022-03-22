@@ -83,7 +83,7 @@ fun AfterEnd(navController: NavHostController) {
         Column(modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(text = "Vous a fini le travail",
+            Text(text = "Vous avez fini le travail",
                 fontSize = 38.sp,
                 fontFamily = fontSansFamily,
                 fontWeight = FontWeight.Bold, color = Color.White)
@@ -100,7 +100,7 @@ fun Greeting(navController: NavHostController) {
 
     val percentagePerEvolve = 10
     var percentage = remember { mutableStateOf<Int>(0) }
-    val phraseEvolution = listOf<String>("CITATION SUIVANTE", "FINIT")
+    val phraseEvolution = listOf<String>("CITATION SUIVANTE", "FINIR")
     val imagePhase =
         listOf<Int>(R.drawable.smiley_sick, R.drawable.smiley_meh, R.drawable.smiley_awe)
     var imageChange: MutableState<Int> = remember { mutableStateOf<Int>(0) }
