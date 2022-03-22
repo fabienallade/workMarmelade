@@ -4,7 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,11 +29,18 @@ fun CustomProgressBar(modifier: Modifier, width: Dp, backgroundColor: Color, for
             contentAlignment = Alignment.CenterEnd
         ){
             Box(modifier = Modifier
-                .clip(shape = RoundedCornerShape(50))
-                .width(15.dp).fillMaxHeight()
+                .clip(shape = CircleShape)
+                .size(15.dp).fillMaxHeight()
                 .background(color = Color.White)
-                .border(border = BorderStroke(2.dp, color = Color.Black)),
-            )
+                .border(border = BorderStroke(2.dp, color = Color.Black))
+                ,
+            ){
+
+            }
         }
     }
+}
+
+fun progressTextWithShape(){
+
 }
