@@ -110,9 +110,9 @@ fun Greeting(navController: NavHostController) {
     var data = remember {
         mutableStateOf<RandomQuoteQuery.RandomQuote>(
             RandomQuoteQuery.RandomQuote(
-                "1",
-                "fabien",
-                "fabien"
+                "0",
+                "",
+                ""
             )
         )
     }
@@ -252,6 +252,7 @@ fun Greeting(navController: NavHostController) {
                                 ProgressBackground,
                                 BackgroundNew1,
                                 percentage.value,
+//                            50,
                             )
                         }
                         Column(modifier = Modifier.fillMaxWidth()) {
